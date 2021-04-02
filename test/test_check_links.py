@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from .conftest import skip_pywin32
 
 
@@ -18,6 +20,16 @@ def test_rst(testdir):
     testdir.copy_example('rst.rst')
     result = testdir.runpytest("-v", "--check-links")
     result.assert_outcomes(passed=7, failed=2)
+
+@skip_pywin32
+def test_rst_nested(testdir):
+    testdir.copy_example('nested/rst.rst')
+    testdir.mkdir('nested')
+    rst = testdir.tmpdir / 'rst.rst'
+    rst.move(testdir.tmpdir / 'nested' / 'rst.rst')
+    testdir.copy_example('rst.rst')
+    result = testdir.runpytest("-v", "--check-links")
+    result.assert_outcomes(passed=14, failed=4)
 
 def test_link_ext(testdir):
     testdir.copy_example('linkcheck.ipynb')
