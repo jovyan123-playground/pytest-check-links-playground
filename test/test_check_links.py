@@ -18,8 +18,8 @@ def test_markdown(testdir):
 def test_markdown_nested(testdir):
     testdir.copy_example('nested/nested.md')
     testdir.mkdir('nested')
-    rst = testdir.tmpdir / 'nested.md'
-    rst.move(testdir.tmpdir / 'nested' / 'nested.md')
+    md = testdir.tmpdir / 'nested.md'
+    md.move(testdir.tmpdir / 'nested' / 'nested.md')
     testdir.copy_example('markdown.md')
     result = testdir.runpytest("-v", "--check-links")
     result.assert_outcomes(passed=8, failed=4)
