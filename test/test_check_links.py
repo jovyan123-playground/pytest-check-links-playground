@@ -15,6 +15,17 @@ def test_markdown(testdir):
     result = testdir.runpytest("-v", "--check-links", "--check-links-ignore", "http.*example.com/.*")
     result.assert_outcomes(passed=8, failed=1)
 
+def test_markdown_nested(testdir):
+    testdir.copy_example('nested/nested.md')
+    testdir.mkdir('nested')
+    rst = testdir.tmpdir / 'nested.md'
+    rst.move(testdir.tmpdir / 'nested' / 'nested.md')
+    testdir.copy_example('markdown.md')
+    result = testdir.runpytest("-v", "--check-links")
+    result.assert_outcomes(passed=8, failed=4)
+    result = testdir.runpytest("-v", "--check-links", "--check-links-ignore", "http.*example.com/.*")
+    result.assert_outcomes(passed=9, failed=1)
+
 @skip_pywin32
 def test_rst(testdir):
     testdir.copy_example('rst.rst')
@@ -23,10 +34,10 @@ def test_rst(testdir):
 
 @skip_pywin32
 def test_rst_nested(testdir):
-    testdir.copy_example('nested/rst.rst')
+    testdir.copy_example('nested/nested.rst')
     testdir.mkdir('nested')
-    rst = testdir.tmpdir / 'rst.rst'
-    rst.move(testdir.tmpdir / 'nested' / 'rst.rst')
+    rst = testdir.tmpdir / 'nested.rst'
+    rst.move(testdir.tmpdir / 'nested' / 'nested.rst')
     testdir.copy_example('rst.rst')
     result = testdir.runpytest("-v", "--check-links")
     result.assert_outcomes(passed=14, failed=4)
